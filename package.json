@@ -1,0 +1,60 @@
+{
+  "name": "@dan-uni/dan-any-ext-ass",
+  "version": "2.0.0",
+  "description": "Ass extension for dan-any, a danmaku transformer lib, based on biliy.",
+  "keywords": [
+    "ass",
+    "bangumi",
+    "biliy",
+    "danmaku"
+  ],
+  "homepage": "https://github.com/ani-uni/dan-any-ext-ass#readme",
+  "bugs": {
+    "url": "https://github.com/ani-uni/dan-any-ext-ass/issues"
+  },
+  "license": "LGPL-3.0-or-later",
+  "author": "rinne",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ani-uni/dan-any-ext-ass.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "test": "vp test",
+    "check": "vp check",
+    "prepublishOnly": "vp run build",
+    "prepare": "vp config"
+  },
+  "dependencies": {
+    "@dan-uni/dan-any": "link:@dan-uni/dan-any",
+    "base16384": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.0",
+    "@typescript/native-preview": "7.0.0-dev.20260509.2",
+    "bumpp": "^11.1.0",
+    "canvas": "^3.2.3",
+    "typescript": "^6.0.3",
+    "vite-plus": "^0.1.21"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+  },
+  "packageManager": "bun@1.3.14",
+  "inlinedDependencies": {
+    "canvas": "3.2.3"
+  }
+}
