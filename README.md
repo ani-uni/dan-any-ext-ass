@@ -111,8 +111,9 @@ API 概览
 
 许可与致谢
 
-- 本项目许可：LGPL-3.0-or-later（详见 `package.json`）
+- 本项目许可：MIT
 - 依赖于 `dan-any` 核心库以完成弹幕数据结构与转换
+- 使用了[justorez/biliy](https://github.com/justorez/biliy)的代码(MIT LICENSE)，并使用了AI进行修改与修复，同时支持了更优的Raw还原功能。
 
 贡献
 
