@@ -38,7 +38,7 @@
     "prepare": "vp config"
   },
   "dependencies": {
-    "@dan-uni/dan-any": "link:@dan-uni/dan-any",
+    "@dan-uni/dan-any": "^2.0.2",
     "base16384": "^1.0.0"
   },
   "devDependencies": {
