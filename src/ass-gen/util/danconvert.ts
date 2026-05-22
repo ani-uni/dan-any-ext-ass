@@ -2,6 +2,7 @@ import type { UDanmaku } from "@dan-uni/dan-any/adapters";
 import type { Danmaku, RGB } from "../types.ts";
 
 import { DanmakuType } from "../types.ts";
+import type { UniDMObj } from "@dan-uni/dan-any/core";
 
 function decimalToRGB888(decimal: number): RGB {
   const r = (decimal >> 16) & 0xff;
@@ -21,7 +22,7 @@ export function UDanmakus2DanmakuLists(UP: UDanmaku[]): Danmaku[] {
     if (d.mode === "Bottom") type = DanmakuType.BOTTOM;
     else if (d.mode === "Top") type = DanmakuType.TOP;
     return {
-      time: d.progress / 1000,
+      time: d.progress / 1000, // 新传入的弹幕UDanmakus为ms int
       type,
       fontSizeType: d.fontsize,
       content: d.content,
@@ -33,14 +34,15 @@ export function UDanmakus2DanmakuLists(UP: UDanmaku[]): Danmaku[] {
 export function DanmakuList2UDanmakus(d: Danmaku[]): UDanmaku[] {
   return d.map((d) => d.extra);
 }
-// export function DanmakuList2UDanmakus4Biliy(
-//   d: Danmaku[],
-// ): Partial<UniDMObj & { extraStr?: string }>[] {
-//   return d.map((d) => ({
-//     progress: d.time * 1000,
-//     type: d.type,
-//     fontSizeType: d.fontSizeType,
-//     content: d.content,
-//     color: (d.color.r << 16) | (d.color.g << 8) | d.color.b,
-//   }));
-// }
+export function DanmakuList2UDanmakus4Biliy(
+  d: Danmaku[],
+): Partial<UniDMObj & { extraStr?: string }>[] {
+  // 已显式指定还原为v1格式的danuni.json，progress采用float的秒
+  return d.map((d) => ({
+    progress: d.time,
+    type: d.type,
+    fontSizeType: d.fontSizeType,
+    content: d.content,
+    color: (d.color.r << 16) | (d.color.g << 8) | d.color.b,
+  }));
+}

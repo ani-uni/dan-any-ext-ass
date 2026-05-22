@@ -1,6 +1,6 @@
 {
   "name": "@dan-uni/dan-any-ext-ass",
-  "version": "2.0.1",
+  "version": "2.0.7",
   "description": "Ass extension for dan-any, a danmaku transformer lib, based on biliy.",
   "keywords": [
     "ass",

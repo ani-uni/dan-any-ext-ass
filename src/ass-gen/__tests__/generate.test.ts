@@ -4,7 +4,11 @@ import { fileURLToPath } from "node:url";
 import { createCanvas } from "canvas";
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 
-import { BiliXmlAdapter, DanuniPbTransformer } from "@dan-uni/dan-any/adapters";
+import {
+  BiliXmlAdapter,
+  DanuniJsonTransformerConfigurator,
+  DanuniPbTransformer,
+} from "@dan-uni/dan-any/adapters";
 import { InitedUniDB, UniDB } from "@dan-uni/dan-any/core";
 import { AssAdapter, AssTransformerLikePluginConfigurator } from "@/index.ts";
 
@@ -69,17 +73,19 @@ describe("兼容性测试", () => {
     const oldPb = await (await udb.import(BiliXmlAdapter(xmlText))).export(DanuniPbTransformer);
     expect(newPb).toEqual(oldPb);
   });
-  // it("biliy", async () => {
-  //   const filename = "898651903.xml";
-  //   const xmlPath = path.join(__dirname, filename);
-  //   const assPath = path.join(__dirname, `${filename}.biliy.ass`);
-  //   const xmlText = fs.readFileSync(xmlPath, "utf8");
-  //   const assText = fs.readFileSync(assPath, "utf8");
-  //   const chunk2 = await udb.import(AssAdapter(assText));
-  //   const newPb = await chunk2.export(DanuniJsonTransformerConfigurator({ minify: true }));
-  //   const oldPb = await (
-  //     await udb.import(BiliXmlAdapter(xmlText))
-  //   ).export(DanuniJsonTransformerConfigurator({ minify: true }));
-  //   expect(newPb).toEqual(oldPb);
-  // });
+  it("biliy", async () => {
+    const filename = "898651903.xml";
+    const xmlPath = path.join(__dirname, filename);
+    const assPath = path.join(__dirname, `${filename}.biliy.ass`);
+    const xmlText = fs.readFileSync(xmlPath, "utf8");
+    const assText = fs.readFileSync(assPath, "utf8");
+    const chunk2 = await udb.import(AssAdapter(assText));
+    const newPb = await chunk2.export(DanuniJsonTransformerConfigurator({ minify: true }));
+    const oldPb = await (
+      await udb.import(BiliXmlAdapter(xmlText))
+    ).export(DanuniJsonTransformerConfigurator({ minify: true }));
+    console.info(newPb);
+    console.info(oldPb);
+    // expect(newPb).toEqual(oldPb);
+  });
 });

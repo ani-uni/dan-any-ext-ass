@@ -14,7 +14,7 @@ export const AssAdapter = defineAdapter((ass: string) => {
     if ("new" in rec) {
       await chunk.import(DanuniPbAdapter(rec.new));
     } else if ("old" in rec) {
-      await chunk.import(DanuniJsonAdapter(rec.old));
+      await chunk.import(DanuniJsonAdapter(rec.old, { isV1: true }));
     }
     return chunk;
   };

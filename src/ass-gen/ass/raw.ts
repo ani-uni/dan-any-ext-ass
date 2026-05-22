@@ -9,6 +9,7 @@ import {
 import * as base16384 from "base16384";
 import type { Context, Danmaku, SubtitleStyle } from "../types.ts";
 import type { UniDMObj } from "@dan-uni/dan-any/core";
+import { DanmakuList2UDanmakus4Biliy } from "../util/danconvert.ts";
 
 type compressType = "zstd" | "brotli" | "gzip";
 type baseType = "base64" | "base18384";
@@ -90,8 +91,7 @@ export function deRaw(ass: string): {
         decompress.toString("utf8"),
       );
       if (parsed.list.every((d) => !d.extra))
-        // return { ...parsed, list: { old: DanmakuList2UDanmakus4Biliy(parsed.list) } };
-        throw new Error("暂不支持对biliy格式的还原，缺失过多原始数据");
+        return { ...parsed, list: { old: DanmakuList2UDanmakus4Biliy(parsed.list) } };
       else
         return { ...parsed, list: { old: parsed.list.map((d) => d.extra as unknown as UniDMObj) } };
     } catch {

@@ -8,10 +8,10 @@
 - 提供 `AssAdapter` 用于从带有 raw 信息的 ASS 还原为 `UniChunk`
 - 提供 `AssTransformerLikePluginConfigurator`，以 plugin 形式将生成器注入到 `dan-any` 的处理流水中
 
-`AssAdapter` 支持还原由 `dan-any v1 / v2` 生成的 ASS：
+`AssAdapter` 支持还原由 `dan-any v1 / v2` / `biliy` 生成的 ASS：
 
 - v2：从 `raw.new` 读取并恢复为 `DanuniPbAdapter`
-- v1：从 `raw.old` 读取并恢复为 `DanuniJsonAdapter`
+- v1/biliy：从 `raw.old` 读取并恢复为 `DanuniJsonAdapter`
 
 快速开始
 
