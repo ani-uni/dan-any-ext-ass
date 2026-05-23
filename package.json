@@ -1,6 +1,6 @@
 {
   "name": "@dan-uni/dan-any-ext-ass",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "description": "Ass extension for dan-any, a danmaku transformer lib, based on biliy.",
   "keywords": [
     "ass",
@@ -38,7 +38,7 @@
     "prepare": "vp config"
   },
   "dependencies": {
-    "@dan-uni/dan-any": "^2.0.2",
+    "@dan-uni/dan-any": "^2.1.0",
     "base16384": "^1.0.0"
   },
   "devDependencies": {

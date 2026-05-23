@@ -2,6 +2,7 @@ import {
   DanuniJsonAdapter,
   DanuniPbAdapter,
   defineAdapter,
+  defineMetadata,
   definePlugin,
 } from "@dan-uni/dan-any/adapters";
 import { generateASS, parseAssRawField, type CanvasCtx, type Options } from "./ass-gen/index.ts";
@@ -30,3 +31,18 @@ export const AssTransformerLikePluginConfigurator = (canvasCtx: CanvasCtx, optio
     const finalOptions = options ?? defaultOptions;
     return generateASS(uchunk, finalOptions, canvasCtx);
   });
+
+export const AssMetadata = defineMetadata({
+  type: "common.ass",
+  ext: [".ass"],
+  check: {
+    adapter: async (uchunk, body) => {
+      if (typeof body !== "string") return null;
+      try {
+        return uchunk.import(AssAdapter(body));
+      } catch {
+        return null;
+      }
+    },
+  },
+});
