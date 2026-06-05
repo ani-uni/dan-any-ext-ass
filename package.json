@@ -1,6 +1,6 @@
 {
   "name": "@dan-uni/dan-any-ext-ass",
-  "version": "2.1.0",
+  "version": "2.2.1",
   "description": "Ass extension for dan-any, a danmaku transformer lib, based on biliy.",
   "keywords": [
     "ass",
@@ -38,16 +38,16 @@
     "prepare": "vp config"
   },
   "dependencies": {
-    "@dan-uni/dan-any": "^2.1.0",
+    "@dan-uni/dan-any": "^2.2.1",
     "base16384": "^1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^25.9.0",
+    "@types/node": "^25.9.1",
     "@typescript/native-preview": "7.0.0-dev.20260509.2",
     "bumpp": "^11.1.0",
     "canvas": "^3.2.3",
     "typescript": "^6.0.3",
-    "vite-plus": "^0.1.21"
+    "vite-plus": "^0.1.24"
   },
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",
