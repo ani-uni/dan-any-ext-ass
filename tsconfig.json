@@ -18,7 +18,8 @@
     "skipLibCheck": true,
     "declarationMap": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@dan-uni/dan-any-ext-ass": ["./dist/*"]
     }
   }
 }
