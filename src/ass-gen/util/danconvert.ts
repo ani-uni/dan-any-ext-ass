@@ -1,8 +1,7 @@
-import type { UDanmaku } from "@dan-uni/dan-any/adapters";
 import type { Danmaku, RGB } from "../types.ts";
 
 import { DanmakuType } from "../types.ts";
-import type { UniDMObj } from "@dan-uni/dan-any/core";
+import type { UDanmaku, UniDMObj } from "@dan-uni/dan-any/core";
 
 function decimalToRGB888(decimal: number): RGB {
   const r = (decimal >> 16) & 0xff;

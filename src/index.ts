@@ -9,7 +9,7 @@ import { generateASS, parseAssRawField, type CanvasCtx, type Options } from "./a
 
 export const AssAdapter = defineAdapter((ass: string) => {
   return async (udb, uchunk) => {
-    const rec = parseAssRawField(ass);
+    const rec = await parseAssRawField(ass);
     if (!rec) throw new Error("还原失败，未找到raw信息");
     const chunk = uchunk ?? (await udb.makeChunk({}));
     if ("new" in rec) {

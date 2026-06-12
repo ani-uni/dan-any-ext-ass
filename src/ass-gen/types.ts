@@ -1,5 +1,5 @@
 // export type BlockRule = string | RegExp
-import type { UDanmaku } from "@dan-uni/dan-any/adapters";
+import type { UDanmaku } from "@dan-uni/dan-any/core";
 import type { CanvasRenderingContext2D as NodeCRCtx2D } from "canvas";
 
 /**

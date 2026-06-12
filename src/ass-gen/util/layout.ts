@@ -1,4 +1,4 @@
-import type { UDanmaku } from "@dan-uni/dan-any/adapters";
+import type { UDanmaku } from "@dan-uni/dan-any/core";
 import type { CanvasCtx, Danmaku, SubtitleStyle } from "../types.ts";
 
 import { DanmakuType, FontSize } from "../types.ts";

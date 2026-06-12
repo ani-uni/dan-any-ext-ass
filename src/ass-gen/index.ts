@@ -45,7 +45,7 @@ export async function generateASS(
   // const filteredList = filterDanmaku(result.list, config.block)
   const mergedList = await danmaku.plugin(MergePluginConfigurator(config.mergeIn));
   const layoutList = layoutDanmaku(await mergedList.$danmakus, config, canvasCtx);
-  const content = ass(
+  const content = await ass(
     layoutList,
     await danmaku.export(DanuniPbTransformer),
     config,
@@ -60,8 +60,8 @@ export async function generateASS(
   return content;
 }
 
-export function parseAssRawField(ass: string) {
-  const raw = deRaw(ass);
+export async function parseAssRawField(ass: string) {
+  const raw = await deRaw(ass);
   if (raw) {
     return raw.list;
   } else {

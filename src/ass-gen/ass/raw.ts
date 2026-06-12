@@ -1,15 +1,10 @@
-import {
-  zstdCompressSync,
-  zstdDecompressSync,
-  brotliCompressSync,
-  brotliDecompressSync,
-  gunzipSync,
-  gzipSync,
-} from "node:zlib";
+import pako from "pako";
 import * as base16384 from "base16384";
 import type { Context, Danmaku, SubtitleStyle } from "../types.ts";
 import type { UniDMObj } from "@dan-uni/dan-any/core";
 import { DanmakuList2UDanmakus4Biliy } from "../util/danconvert.ts";
+import zstd from "@bokuweb/zstd-wasm";
+import brotliDecompress = require("brotli/decompress");
 
 type compressType = "zstd" | "brotli" | "gzip";
 type baseType = "base64" | "base18384";
@@ -17,7 +12,7 @@ const compressTypes = new Set(["zstd", "brotli", "gzip"]);
 const baseTypes = new Set(["base64", "base18384"]);
 
 export interface RawConfig {
-  compressType: compressType;
+  compressType: Exclude<compressType, "brotli">;
   baseType: baseType;
 }
 
@@ -29,42 +24,40 @@ function fromUint16Array(array: Uint16Array): string {
   return result;
 }
 
-export function raw(
+export async function raw(
   list: Uint8Array,
   config: SubtitleStyle,
   context: Context,
-  compressType: compressType = "zstd",
+  compressType: Exclude<compressType, "brotli"> = "zstd",
   baseType: baseType = "base18384",
 ) {
   const rawConf = { config, context };
   const rawConfText = JSON.stringify(rawConf);
-  let compressConf: Buffer, compressPb: Buffer;
+  let compressConf: Uint8Array, compressPb: Uint8Array;
   if (compressType === "zstd") {
-    compressConf = zstdCompressSync(rawConfText);
-    compressPb = zstdCompressSync(list);
-  } else if (compressType === "brotli") {
-    compressConf = brotliCompressSync(rawConfText);
-    compressPb = brotliCompressSync(list);
+    await zstd.init();
+    compressConf = zstd.compress(new TextEncoder().encode(rawConfText));
+    compressPb = zstd.compress(list);
   } else {
-    compressConf = gzipSync(rawConfText);
-    compressPb = gzipSync(list);
+    compressConf = pako.gzip(rawConfText);
+    compressPb = pako.gzip(list);
   }
   const baseCompressConf =
     baseType === "base64"
-      ? compressConf.toString("base64")
+      ? Buffer.from(compressConf).toString("base64")
       : fromUint16Array(base16384.encode(compressConf));
   const baseCompressPb =
     baseType === "base64"
-      ? compressPb.toString("base64")
+      ? Buffer.from(compressPb).toString("base64")
       : fromUint16Array(base16384.encode(compressPb));
   return `;RawCompressType: ${compressType}\n;RawBaseType: ${baseType}\n;RawConf: ${baseCompressConf}\n;RawPb: ${baseCompressPb}`;
 }
 
-export function deRaw(ass: string): {
+export async function deRaw(ass: string): Promise<{
   list: { old: Partial<UniDMObj & { extraStr?: string }>[] } | { new: Uint8Array };
   config: SubtitleStyle;
   context: Context;
-} | null {
+} | null> {
   const arr = ass.split("\n");
   const lineCompressType = arr.find((line) => line.startsWith(";RawCompressType:"));
   const lineBaseType = arr.find((line) => line.startsWith(";RawBaseType:"));
@@ -82,13 +75,15 @@ export function deRaw(ass: string): {
       baseType === "base64"
         ? Buffer.from(text, "base64")
         : Buffer.from(base16384.decode(Buffer.from(text, "utf8").toString("utf8")));
-    let decompress: Buffer;
-    if (compressType === "zstd") decompress = zstdDecompressSync(buffer);
-    else if (compressType === "brotli") decompress = brotliDecompressSync(buffer);
-    else decompress = gunzipSync(buffer);
+    let decompress: Uint8Array;
+    if (compressType === "zstd") {
+      await zstd.init();
+      decompress = zstd.decompress(buffer);
+    } else if (compressType === "brotli") decompress = brotliDecompress(buffer);
+    else decompress = pako.ungzip(buffer);
     try {
       const parsed: { list: Danmaku[]; config: SubtitleStyle; context: Context } = JSON.parse(
-        decompress.toString("utf8"),
+        Buffer.from(decompress).toString("utf8"),
       );
       if (parsed.list.every((d) => !d.extra))
         return { ...parsed, list: { old: DanmakuList2UDanmakus4Biliy(parsed.list) } };
@@ -112,20 +107,21 @@ export function deRaw(ass: string): {
       baseType === "base64"
         ? Buffer.from(textPb, "base64")
         : Buffer.from(base16384.decode(Buffer.from(textPb, "utf8").toString("utf8")));
-    let decompressConf: Buffer, decompressPb: Buffer;
+    let decompressConf: Uint8Array, decompressPb: Uint8Array;
     if (compressType === "zstd") {
-      decompressConf = zstdDecompressSync(bufferConf);
-      decompressPb = zstdDecompressSync(bufferPb);
+      await zstd.init();
+      decompressConf = zstd.decompress(bufferConf);
+      decompressPb = zstd.decompress(bufferPb);
     } else if (compressType === "brotli") {
-      decompressConf = brotliDecompressSync(bufferConf);
-      decompressPb = brotliDecompressSync(bufferPb);
+      decompressConf = brotliDecompress(bufferConf);
+      decompressPb = brotliDecompress(bufferPb);
     } else {
-      decompressConf = gunzipSync(bufferConf);
-      decompressPb = gunzipSync(bufferPb);
+      decompressConf = pako.ungzip(bufferConf);
+      decompressPb = pako.ungzip(bufferPb);
     }
     try {
       const parsedConf: { config: SubtitleStyle; context: Context } = JSON.parse(
-        decompressConf.toString("utf8"),
+        Buffer.from(decompressConf).toString("utf8"),
       );
       const parsedPb: Uint8Array = new Uint8Array(decompressPb);
       return { ...parsedConf, list: { new: parsedPb } };
