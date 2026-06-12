@@ -9,21 +9,21 @@ import {
   DanuniJsonTransformerConfigurator,
   DanuniPbTransformer,
 } from "@dan-uni/dan-any/adapters";
-import { InitedUniDB, UniDB } from "@dan-uni/dan-any/core/main/drizzle";
+import { InitedUniDB, UniDB } from "@dan-uni/dan-any/core/main/pure";
 import { AssAdapter, AssTransformerLikePluginConfigurator } from "@/index.ts";
 
 let udb: InitedUniDB;
 beforeAll(async () => {
-  udb = await new UniDB().init();
+  udb = new UniDB().init();
 });
 afterAll(async () => {
-  await udb.shrink();
-  await udb.close();
+  udb.shrink();
+  udb.close();
 });
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-describe.sequential("ori", () => {
+describe("ori", { concurrent: false }, () => {
   it("generate ass from xml", async () => {
     const filename = "898651903.xml";
     const xmlPath = path.join(__dirname, filename);
@@ -55,8 +55,8 @@ describe.sequential("ori", () => {
     // const oldPb = await (
     //   await udb.import(BiliXmlAdapter(xmlText))
     // ).export(DanuniJsonTransformerConfigurator({ minify: true }));
-    const newPb = await chunk2.export(DanuniPbTransformer);
-    const oldPb = await (await udb.import(BiliXmlAdapter(xmlText))).export(DanuniPbTransformer);
+    const newPb = chunk2.export(DanuniPbTransformer);
+    const oldPb = (await udb.import(BiliXmlAdapter(xmlText))).export(DanuniPbTransformer);
     expect(newPb).toEqual(oldPb);
   });
 });
@@ -69,10 +69,10 @@ describe("兼容性测试", () => {
     const xmlText = fs.readFileSync(xmlPath, "utf8");
     const assText = fs.readFileSync(assPath, "utf8");
     const chunk2 = await udb.import(AssAdapter(assText));
-    const v1 = await chunk2.export(DanuniJsonTransformerConfigurator({ minify: true }));
-    const v2 = await (
-      await udb.import(BiliXmlAdapter(xmlText))
-    ).export(DanuniJsonTransformerConfigurator({ minify: true }));
+    const v1 = chunk2.export(DanuniJsonTransformerConfigurator({ minify: true }));
+    const v2 = (await udb.import(BiliXmlAdapter(xmlText))).export(
+      DanuniJsonTransformerConfigurator({ minify: true }),
+    );
     const notV1 = v1.find((d) => d.extra?.bili?.dmid === "1205858475490508800");
     const notV2 = v2.find((d) => d.extra?.bili?.dmid === "1205858475490508800");
     expect(notV1).toBeDefined();
@@ -91,10 +91,10 @@ describe("兼容性测试", () => {
     const xmlText = fs.readFileSync(xmlPath, "utf8");
     const assText = fs.readFileSync(assPath, "utf8");
     const chunk2 = await udb.import(AssAdapter(assText));
-    const newPb = await chunk2.export(DanuniJsonTransformerConfigurator({ minify: true }));
-    const oldPb = await (
-      await udb.import(BiliXmlAdapter(xmlText))
-    ).export(DanuniJsonTransformerConfigurator({ minify: true }));
+    const newPb = chunk2.export(DanuniJsonTransformerConfigurator({ minify: true }));
+    const oldPb = (await udb.import(BiliXmlAdapter(xmlText))).export(
+      DanuniJsonTransformerConfigurator({ minify: true }),
+    );
     console.info(newPb);
     console.info(oldPb);
     // expect(newPb).toEqual(oldPb);

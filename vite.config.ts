@@ -8,15 +8,22 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   optimizeDeps: {
-    exclude: ["@electric-sql/pglite"],
+    exclude: ["@electric-sql/pglite", "@bokuweb/zstd-wasm"],
   },
   pack: {
     entry: "src/index.ts",
+    platform: "neutral",
+    deps: {
+      onlyBundle: ["canvas"],
+    },
     dts: {
       tsgo: true,
     },
     exports: true,
     minify: true,
+    attw: {
+      profile: "esm-only",
+    },
   },
   lint: {
     options: {
@@ -25,4 +32,7 @@ export default defineConfig({
     },
   },
   fmt: {},
+  test: {
+    environment: "edge-runtime",
+  },
 });
